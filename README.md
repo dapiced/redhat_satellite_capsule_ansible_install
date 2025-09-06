@@ -117,7 +117,7 @@ rhel_satellite/
 
 ### **Support**
 
-- **ACME Team**                 : Development, maintenance and documentation
+- **dapiced Team**                 : Development, maintenance and documentation
 - **Red Hat Customer Portal**   : Product support
 
 ---

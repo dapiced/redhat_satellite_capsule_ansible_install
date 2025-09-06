@@ -64,7 +64,7 @@ The `rhel_capsule` role performs a complete installation and configuration of Re
 
 ## Author
 
-**ACME Team** - Development, maintenance and documentation
+**dapiced Team** - Development, maintenance and documentation
 
 ## License
 
@@ -72,5 +72,5 @@ MIT
 
 ## Support
 
-- ACME
+- dapiced
 - Red Hat Customer Portal for Satellite

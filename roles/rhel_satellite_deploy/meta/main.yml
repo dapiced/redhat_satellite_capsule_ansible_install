@@ -1,7 +1,7 @@
 ---
 galaxy_info:  
-  author: "ACME"
-  namespace: "acme"
+  author: "dapiced"
+  namespace: "dapiced"
   role_name: "rhel_satellite_deploy"
   description: |
     Complete Ansible role for Red Hat Satellite 6.17 deployment and configuration
@@ -9,7 +9,7 @@ galaxy_info:
     configuration of repositories, lifecycle environments, content views and activation keys.
     Optimized for enterprise environment with proxy support and centralized variables.  
   
-  company: "ACME"
+  company: "dapiced"
   license: "Free"
   min_ansible_version: "2.12"  
   
@@ -28,6 +28,6 @@ galaxy_info:
     - lifecycle-management
     - repository-management
     - enterprise
-    - acme    
+    - dapiced    
     - system
     - packaging
