@@ -1,4 +1,4 @@
-# Ansible Role: rhel_satellite
+# Ansible Role: rhel_satellite_deploy
 
 This Ansible role automates the complete installation and configuration of Red Hat Satellite.
 
