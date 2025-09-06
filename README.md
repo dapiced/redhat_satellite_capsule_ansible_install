@@ -21,10 +21,10 @@ This repository contains **2 specialized Ansible roles** and **2 playbooks** to 
 │   (Central         │    │   (Ansible)        │    │    (Proxy)         │
 │    Server)         │    │                    │    │                    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-│ Content Management      | Automation           │ Content Proxy          
-│ Lifecycle Environments  │ Certificate Mgmt     │ Client Registration    
-│ Subscription Management │                      │ Repository Sync 
-│                         │                      │ SSL capsule-satellite cert
+     │ Content Management      | Automation           │ Content Proxy          
+     │ Lifecycle Environments  │ Certificate Mgmt     │ Client Registration    
+     │ Subscription Management │                      │ Repository Sync 
+     │                         │                      │ SSL capsule-satellite cert
 ```
 
 ---
