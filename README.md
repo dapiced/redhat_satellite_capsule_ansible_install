@@ -39,7 +39,7 @@ rhel_satellite/
 ├── rhel_satellite_deploy.yml           # Satellite deployment playbook
 ├── rhel_capsule_deploy.yml             # Capsule deployment playbook
 ├── collections/requirements.yml        # Required Ansible collections
-├── roles/    
+├── roles/                              # Roles directory (Satellite & Capsule)
 │   ├── rhel_satellite_deploy/          # Complete Satellite role
 │   │   ├── README.md                   # Satellite role documentation
 │   │   ├── defaults/main.yml           # Optimized variables (219 lines)
