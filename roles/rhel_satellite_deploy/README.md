@@ -75,7 +75,7 @@ The `rhel_satellite` role performs a complete installation and configuration of 
 
 ## Author
 
-**ACME Team** - Development, maintenance and documentation
+**dapiced Team** - Development, maintenance and documentation
 
 ## License
 
@@ -83,5 +83,5 @@ MIT
 
 ## Support
 
-- ACME Team
+- dapiced Team
 - Red Hat Customer Portal for Satellite

@@ -1,13 +1,13 @@
 ---
 galaxy_info:  
-  author: "ACME"
-  namespace: "acme"
+  author: "dapiced"
+  namespace: "dapiced"
   role_name: "rhel_capsule_deploy"
   description: |
     Complete Ansible role for Red Hat Capsule 6.17 deployment and configuration
     on RHEL 9.  
   
-  company: "ACME"
+  company: "dapiced"
   license: "Free"
   min_ansible_version: "2.12"  
   
@@ -26,6 +26,6 @@ galaxy_info:
     - lifecycle-management
     - repository-management
     - enterprise
-    - acme    
+    - dapiced    
     - system
     - packaging
