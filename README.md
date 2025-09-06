@@ -11,7 +11,7 @@ Ansible automation for Red Hat Satellite and Capsule deployment and configuratio
 This repository contains **2 specialized Ansible roles** and **2 playbooks** to fully automate:
 
 - **rhel_satellite_deploy.yml => rhel_satellite_deploy** : Installation, configuration, content management and lifecycle environments
-- **rhel_capsule_deploy.yml =>rhel_capsule_deploy**      : Installation, registration, PKI certificate generation/transfer
+- **rhel_capsule_deploy.yml => rhel_capsule_deploy**      : Installation, registration, PKI certificate generation/transfer
 
 ### Architecture
 
