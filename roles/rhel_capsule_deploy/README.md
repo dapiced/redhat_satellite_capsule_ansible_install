@@ -8,7 +8,7 @@ This Ansible role automates the complete installation and configuration of Red H
 
 ## Description
 
-The `rhel_capsule` role performs a complete installation and configuration of Red Hat Satellite by automating all necessary steps:
+The `rhel_capsule_deploy` role performs a complete installation and configuration of Red Hat Satellite by automating all necessary steps:
 
 - Capsule server installation
 - Post-installation configuration with products and repositories
