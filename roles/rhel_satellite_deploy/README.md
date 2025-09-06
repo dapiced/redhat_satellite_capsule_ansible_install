@@ -8,7 +8,7 @@ This Ansible role automates the complete installation and configuration of Red H
 
 ## Description
 
-The `rhel_satellite` role performs a complete installation and configuration of Red Hat Satellite by automating all necessary steps:
+The `rhel_satellite_deploy` role performs a complete installation and configuration of Red Hat Satellite by automating all necessary steps:
 
 - Satellite server installation
 - Post-installation configuration with products and repositories
