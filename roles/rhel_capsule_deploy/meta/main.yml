@@ -1,0 +1,31 @@
+---
+galaxy_info:  
+  author: "ACME"
+  namespace: "acme"
+  role_name: "rhel_capsule_deploy"
+  description: |
+    Complete Ansible role for Red Hat Capsule 6.17 deployment and configuration
+    on RHEL 9.  
+  
+  company: "ACME"
+  license: "Free"
+  min_ansible_version: "2.12"  
+  
+  platforms:
+    - name: EL
+      versions:
+        - "9"    
+  
+  galaxy_tags:
+    - satellite
+    - capsule
+    - redhat
+    - rhel9
+    - content-management
+    - subscription-manager
+    - lifecycle-management
+    - repository-management
+    - enterprise
+    - acme    
+    - system
+    - packaging

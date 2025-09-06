@@ -1,0 +1,35 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  force_handlers: true
+
+  pre_tasks:    
+        
+    - name: Gather system information
+      ansible.builtin.setup:  
+      
+    - name: Display system information
+      ansible.builtin.debug:
+        msg: 
+          - "Beginning Capsule installation on {{ inventory_hostname }}"
+          - "Distribution: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+          - "Architecture: {{ ansible_architecture }}"
+
+  roles:
+    - role: rhel_capsule_deploy
+      vars:
+        # To customize variables see the default/main.yml section        
+        # sat_server: "" # FQDN      
+      tags: capsule_installation           
+
+  post_tasks:    
+    - name: Display final status
+      ansible.builtin.debug:
+        msg:
+          - "Red Hat Capsule installation completed successfully"
+          - "Organization: {{ sat_org }}"
+          - "Server accessible at: https://{{ sat_server }}"
+          - "User: admin"
+          - "Password: {{ sat_pass }}"
+          - "Check Infrastructure/Capsule tab in Satellite webui for Capsule status"

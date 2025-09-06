@@ -1,0 +1,10 @@
+---
+- name: "Capsule deployment"
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop:
+    - "{{ sat_scenario }}_pre.yml"
+    - "{{ sat_scenario }}_install.yml"
+    - "{{ sat_scenario }}_config.yml"
+  when: sat_scenario == "capsule"  
+  tags: [capsuleinstall, capsuleconfig, capsulepre]
+  

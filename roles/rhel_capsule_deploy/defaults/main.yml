@@ -1,0 +1,21 @@
+---
+# Base definition for rhel_satellite
+rhel_version:       "9"
+rhel_arch:          "x86_64"
+sat_version:        "6.17"
+sat_user:           "admin"              # Satellite administrator user
+sat_pass:           ""                   # admin password
+sat_server:         ""                   # Satellite server provided by user (without https://)
+sat_scenario:       "capsule"
+sat_org:            ""                   # Satellite organization name      
+sat_cv_act_key:     ""                   # Satellite Activation key
+
+sat_os_version:  
+    - "rhel-{{ rhel_version }}-for-{{ rhel_arch }}-baseos-rpms"
+    - "rhel-{{ rhel_version }}-for-{{ rhel_arch }}-appstream-rpms"
+sat_bin_version: 
+    - "satellite-{{ sat_scenario }}-{{ sat_version }}-for-rhel-{{ rhel_version }}-{{ rhel_arch }}-rpms"
+    - "satellite-maintenance-{{ sat_version }}-for-rhel-{{ rhel_version }}-{{ rhel_arch }}-rpms"
+
+username: "" # for delegate_to tasks
+password: "" # for delegate_to tasks

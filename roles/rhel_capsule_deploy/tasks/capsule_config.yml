@@ -1,0 +1,129 @@
+---
+- name: Create directory for Capsule certificates
+  ansible.builtin.file:
+    path: /root/capsule_cert
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  delegate_to: "{{ sat_server }}"  
+  vars:
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+  tags: capsule_cert  
+
+- name: Check existence of old certificate file
+  ansible.builtin.stat:
+    path: /root/capsule_cert/{{ inventory_hostname }}-certs.tar
+  register: old_cert_file_check
+  delegate_to: "{{ sat_server }}"
+  vars:
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+  tags: capsule_cert
+
+- name: Rename old certificate file to .tar_old
+  ansible.builtin.command:
+    cmd: mv /root/capsule_cert/{{ inventory_hostname }}-certs.tar /root/capsule_cert/{{ inventory_hostname }}-certs.tar_old
+  when: old_cert_file_check.stat.exists
+  delegate_to: "{{ sat_server }}"
+  vars:
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+  tags: capsule_cert
+
+# The redhat.satellite_operations.capsule_certs_generate module does not create/generate certificate install command
+# https://access.redhat.com/solutions/7101067
+- name: Generate Capsule certificates 
+  ansible.builtin.command:
+    cmd: >
+      capsule-certs-generate 
+      --foreman-proxy-fqdn {{ inventory_hostname }}
+      --certs-tar /root/capsule_cert/{{ inventory_hostname }}-certs.tar
+    creates: /root/capsule_cert/{{ inventory_hostname }}-certs.tar
+  delegate_to: "{{ sat_server }}"
+  register: capsule_certs_result
+  tags: capsule_cert
+  vars:
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+  no_log: true
+
+- name: Fetch certificate file from Satellite server
+  ansible.builtin.fetch:
+    src: /root/capsule_cert/{{ inventory_hostname }}-certs.tar
+    dest: /tmp/satellite_certs/
+    flat: yes
+  delegate_to: "{{ sat_server }}"
+  register: fetch_result  
+  vars:
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+  no_log: true
+  tags: capsule_cert
+
+- name: Copy certificate to Capsule server
+  ansible.builtin.copy:
+    src: /tmp/satellite_certs/{{ inventory_hostname }}-certs.tar
+    dest: /root/{{ inventory_hostname }}-certs.tar
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  register: copy_result  
+  vars:
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+  no_log: true
+  tags: capsule_cert
+
+- name: Verify certificate transfer on capsule
+  ansible.builtin.stat:
+    path: /root/{{ inventory_hostname }}-certs.tar
+  register: cert_file_stat
+  tags: capsule_cert
+
+- name: Find OAuth consumer key
+  ansible.builtin.set_fact:
+    oauth_lines_ckey: "{{ capsule_certs_result.stdout_lines | select('match', '.*--foreman-proxy-oauth-consumer-key.*') | list }}"
+  no_log: true
+
+- name: Extract OAuth consumer key value
+  ansible.builtin.set_fact:
+    oauth_consumer_key: "{{ oauth_lines_ckey[0] | regex_search('\"([^\"]+)\"', '\\1') | first if oauth_lines_ckey else 'NOT_FOUND' }}"
+  no_log: true
+
+- name: Find OAuth consumer secret
+  ansible.builtin.set_fact:
+    oauth_lines_csecret: "{{ capsule_certs_result.stdout_lines | select('match', '.*--foreman-proxy-oauth-consumer-secret.*') | list }}"
+  no_log: true    
+
+- name: Extract OAuth consumer secret value
+  ansible.builtin.set_fact:
+    oauth_consumer_secret: "{{ oauth_lines_csecret[0] | regex_search('\"([^\"]+)\"', '\\1') | first if oauth_lines_csecret else 'NOT_FOUND' }}"
+  no_log: true     
+
+- name: Configure Capsule
+  ansible.builtin.import_role:
+    name: redhat.satellite_operations.installer
+  vars:
+    satellite_installer_scenario: "capsule"
+    satellite_installer_options:
+      - '--certs-tar-file "/root/{{ inventory_hostname }}-certs.tar"'
+      - '--foreman-proxy-register-in-foreman "true"'
+      - '--foreman-proxy-foreman-base-url "https://{{ sat_server }}"'
+      - '--foreman-proxy-trusted-hosts "{{ sat_server }}"'
+      - '--foreman-proxy-trusted-hosts "{{ inventory_hostname }}"'
+      - '--foreman-proxy-oauth-consumer-key "{{ oauth_consumer_key }}"'
+      - '--foreman-proxy-oauth-consumer-secret "{{ oauth_consumer_secret }}"'
+  when: 
+    - cert_file_stat.stat.exists | default(false)
+    - sat_server is defined
+  register: capsule_installer_result
+  tags:
+    - satellite_installer
+    - capsule_install
+  no_log: true   
+
+- name: force all notified handlers to run at this point
+  meta: flush_handlers    

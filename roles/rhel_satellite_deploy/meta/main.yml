@@ -1,0 +1,33 @@
+---
+galaxy_info:  
+  author: "ACME"
+  namespace: "acme"
+  role_name: "rhel_satellite_deploy"
+  description: |
+    Complete Ansible role for Red Hat Satellite 6.17 deployment and configuration
+    on RHEL 9. Supports installation of Satellite and Capsule servers with automated
+    configuration of repositories, lifecycle environments, content views and activation keys.
+    Optimized for enterprise environment with proxy support and centralized variables.  
+  
+  company: "ACME"
+  license: "Free"
+  min_ansible_version: "2.12"  
+  
+  platforms:
+    - name: EL
+      versions:
+        - "9"    
+  
+  galaxy_tags:
+    - satellite
+    - capsule
+    - redhat
+    - rhel9
+    - content-management
+    - subscription-manager
+    - lifecycle-management
+    - repository-management
+    - enterprise
+    - acme    
+    - system
+    - packaging

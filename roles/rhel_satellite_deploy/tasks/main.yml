@@ -1,0 +1,10 @@
+---
+- name: "Satellite deployment"
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop:
+    - "{{ sat_scenario }}_pre.yml"
+    - "{{ sat_scenario }}_install.yml"
+    - "{{ sat_scenario }}_config.yml"
+  when: sat_scenario == "satellite"  
+  tags: [satelliteinstall, satelliteconfig, satellitepre]  
+

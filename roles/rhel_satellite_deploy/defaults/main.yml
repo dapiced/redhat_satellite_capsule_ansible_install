@@ -1,0 +1,218 @@
+---
+# Base definition for rhel_satellite
+rhel_version:       "9"
+rhel_arch:          "x86_64"
+sat_version:        "6.17"
+sat_user:           "admin"
+sat_rhsm_org_id:    "" # from acces.redhat.com
+sat_pass:           "" # admin password            
+sat_actkey:         "" # Activation key from console.redhat.com            
+sat_org:            "" # Satellite instance name
+sat_scenario:       "satellite"    
+sat_manifest:       "https://url/manifest.zip"
+sat_proxy_hostname: ""
+sat_proxy_port:     ""
+sat_no_proxy:       ""
+sat_proxy:          "http://{{ sat_proxy_hostname }}:{{ sat_proxy_port }}"
+sat_cv_admin:       "" # For satellite/capsule management
+sat_cv_act_key:     "" # For satellite/capsule management
+sat_profile:        "development" # Performance profile options below
+####################################################################################
+# development       8-16GB 2   cores  Local/test usage (very slow not recommended) #
+# default           18GB   4   cores  Up to 5000                                   #
+# medium            30GB   8   cores  5001 to 10000                                #
+# large             62GB   16  cores  10001 to 20000                               #
+# extra-extra-large 254GB  48+ cores  60000+                                       #
+####################################################################################
+sat_os_version:  
+    - "rhel-{{ rhel_version }}-for-{{ rhel_arch }}-baseos-rpms"
+    - "rhel-{{ rhel_version }}-for-{{ rhel_arch }}-appstream-rpms"
+sat_bin_version: 
+    - "satellite-{{ sat_version }}-for-rhel-{{ rhel_version }}-{{ rhel_arch }}-rpms"
+    - "satellite-maintenance-{{ sat_version }}-for-rhel-{{ rhel_version }}-{{ rhel_arch }}-rpms"
+
+# Definition of RedHat products
+redhat_products:
+  rhel:
+    name: "Red Hat Enterprise Linux for {{ rhel_arch }}"
+    short_name: "RHEL"
+  satellite:
+    name: "Red Hat Satellite"
+    short_name: "Satellite"
+  capsule:
+    name: "Red Hat Satellite Capsule"
+    short_name: "Capsule"
+  codeready:
+    name: "Red Hat CodeReady Linux Builder for {{ rhel_arch }}"
+    short_name: "CodeReady"
+
+# Definition of repositories with references to RedHat products
+satellite_repositories_catalog:
+  rhel_appstream:
+    name: "Red Hat Enterprise Linux {{ rhel_version }} for {{ rhel_arch }} - AppStream RPMs {{ rhel_version }}"
+    subscription_name: "Red Hat Enterprise Linux {{ rhel_version }} for {{ rhel_arch }} - AppStream (RPMs)"
+    product: "{{ redhat_products.rhel.name }}"
+    releasever: "{{ rhel_version }}"
+    enabled: true
+  rhel_baseos:
+    name: "Red Hat Enterprise Linux {{ rhel_version }} for {{ rhel_arch }} - BaseOS RPMs {{ rhel_version }}"
+    subscription_name: "Red Hat Enterprise Linux {{ rhel_version }} for {{ rhel_arch }} - BaseOS (RPMs)"
+    product: "{{ redhat_products.rhel.name }}"
+    releasever: "{{ rhel_version }}"
+    enabled: true
+  rhel_supplementary:
+    name: "Red Hat Enterprise Linux {{ rhel_version }} for {{ rhel_arch }} - Supplementary RPMs {{ rhel_version }}"
+    subscription_name: "Red Hat Enterprise Linux {{ rhel_version }} for {{ rhel_arch }} - Supplementary (RPMs)"
+    product: "{{ redhat_products.rhel.name }}"
+    releasever: "{{ rhel_version }}"
+    enabled: true
+  satellite_main:
+    name: "Red Hat Satellite {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} RPMs"
+    subscription_name: "Red Hat Satellite {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} (RPMs)"
+    product: "{{ redhat_products.satellite.name }}"
+    enabled: true
+  satellite_capsule:
+    name: "Red Hat Satellite Capsule {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} RPMs"
+    subscription_name: "Red Hat Satellite Capsule {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} (RPMs)"
+    product: "{{ redhat_products.capsule.name }}"
+    enabled: true
+  satellite_client:
+    name: "Red Hat Satellite Client 6 for RHEL {{ rhel_version }} {{ rhel_arch }} RPMs"
+    subscription_name: "Red Hat Satellite Client 6 for RHEL {{ rhel_version }} {{ rhel_arch }} (RPMs)"
+    product: "{{ redhat_products.rhel.name }}"
+    enabled: true
+  satellite_maintenance:
+    name: "Red Hat Satellite Maintenance {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} RPMs"
+    subscription_name: "Red Hat Satellite Maintenance {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} (RPMs)"
+    product: "{{ redhat_products.rhel.name }}"
+    enabled: true
+  satellite_utils:
+    name: "Red Hat Satellite Utils {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} RPMs"
+    subscription_name: "Red Hat Satellite Utils {{ sat_version }} for RHEL {{ rhel_version }} {{ rhel_arch }} (RPMs)"
+    product: "{{ redhat_products.rhel.name }}"
+    enabled: true
+  codeready:
+    name: "Red Hat CodeReady Linux Builder for RHEL {{ rhel_version }} {{ rhel_arch }} RPMs {{ rhel_version }}"
+    subscription_name: "Red Hat CodeReady Linux Builder for RHEL {{ rhel_version }} {{ rhel_arch }} (RPMs)"
+    product: "{{ redhat_products.codeready.name }}"
+    releasever: "{{ rhel_version }}"
+    enabled: true
+
+# Configuration products for RedHat repositories
+satellite_repositories_products_vars:
+  - name: "{{ redhat_products.rhel.name }}"
+    repository_sets:
+      - name: "{{ satellite_repositories_catalog.rhel_appstream.subscription_name }}"
+        releasever: "{{ satellite_repositories_catalog.rhel_appstream.releasever }}"
+        enabled: "{{ satellite_repositories_catalog.rhel_appstream.enabled }}"
+      - name: "{{ satellite_repositories_catalog.rhel_baseos.subscription_name }}"
+        releasever: "{{ satellite_repositories_catalog.rhel_baseos.releasever }}"
+        enabled: "{{ satellite_repositories_catalog.rhel_baseos.enabled }}"
+      - name: "{{ satellite_repositories_catalog.rhel_supplementary.subscription_name }}"
+        releasever: "{{ satellite_repositories_catalog.rhel_supplementary.releasever }}"
+        enabled: "{{ satellite_repositories_catalog.rhel_supplementary.enabled }}"
+      - name: "{{ satellite_repositories_catalog.satellite_maintenance.subscription_name }}"
+        enabled: "{{ satellite_repositories_catalog.satellite_maintenance.enabled }}"
+      - name: "{{ satellite_repositories_catalog.satellite_client.subscription_name }}"
+        enabled: "{{ satellite_repositories_catalog.satellite_client.enabled }}"
+      - name: "{{ satellite_repositories_catalog.satellite_utils.subscription_name }}"
+        enabled: "{{ satellite_repositories_catalog.satellite_utils.enabled }}"
+  - name: "{{ redhat_products.satellite.name }}"
+    repository_sets:
+      - name: "{{ satellite_repositories_catalog.satellite_main.subscription_name }}"
+        enabled: "{{ satellite_repositories_catalog.satellite_main.enabled }}"
+  - name: "{{ redhat_products.capsule.name }}"
+    repository_sets:
+      - name: "{{ satellite_repositories_catalog.satellite_capsule.subscription_name }}"
+        enabled: "{{ satellite_repositories_catalog.satellite_capsule.enabled }}"
+  - name: "{{ redhat_products.codeready.name }}"
+    repository_sets:
+      - name: "{{ satellite_repositories_catalog.codeready.subscription_name }}"
+        releasever: "{{ satellite_repositories_catalog.codeready.releasever }}"
+        enabled: "{{ satellite_repositories_catalog.codeready.enabled }}"
+
+# Product names for RedHat synchronization repositories
+satellite_sync_products_vars:
+  - "{{ redhat_products.rhel.name }}"
+  - "{{ redhat_products.satellite.name }}"
+  - "{{ redhat_products.capsule.name }}"
+  #- "{{ redhat_products.codeready.name }}" # Uncomment if CodeReady repository is needed   
+
+# RedHat configuration environment lifecycle
+satellite_lifecycle_environments_vars:
+  - name: "test"
+    prior: "Library"
+  - name: "dev"
+  - name: "lab"
+    prior: "dev"
+  - name: "qa"
+    prior: "lab"
+  - name: "preprod"
+    prior: "qa"
+  - name: "prod"
+    prior: "preprod"
+
+# RedHat content views configuration
+satellite_content_views_vars:
+  - name: "{{ sat_cv_admin }}"
+    repositories:
+      - name: "{{ satellite_repositories_catalog.codeready.name }}"
+        product: "{{ satellite_repositories_catalog.codeready.product }}"
+      - name: "{{ satellite_repositories_catalog.rhel_appstream.name }}"
+        product: "{{ satellite_repositories_catalog.rhel_appstream.product }}"
+      - name: "{{ satellite_repositories_catalog.rhel_baseos.name }}"
+        product: "{{ satellite_repositories_catalog.rhel_baseos.product }}"
+      - name: "{{ satellite_repositories_catalog.rhel_supplementary.name }}"
+        product: "{{ satellite_repositories_catalog.rhel_supplementary.product }}"
+      - name: "{{ satellite_repositories_catalog.satellite_main.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_main.product }}"
+      - name: "{{ satellite_repositories_catalog.satellite_capsule.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_capsule.product }}"
+      - name: "{{ satellite_repositories_catalog.satellite_client.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_client.product }}"
+      - name: "{{ satellite_repositories_catalog.satellite_maintenance.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_maintenance.product }}"
+      - name: "{{ satellite_repositories_catalog.satellite_utils.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_utils.product }}"
+
+# Lifecycle environment names for RedHat content view promotion configuration
+satellite_promotion_environments_vars: "{{ satellite_lifecycle_environments_vars | map(attribute='name') | list }}"
+
+# RedHat activation key configuration
+satellite_activation_keys_vars:
+  - name: "{{ sat_cv_act_key }}"
+    lifecycle_environment: "Library"
+    content_view: "{{ sat_cv_admin }}"
+    auto_attach: true
+    release_version: "{{ rhel_version }}"
+    service_level: "Premium"
+    purpose_usage: "Production"
+    purpose_role: "Red Hat Enterprise Linux Server"
+    repositories:
+      - name: "{{ satellite_repositories_catalog.rhel_appstream.name }}"
+        product: "{{ satellite_repositories_catalog.rhel_appstream.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.rhel_baseos.name }}"
+        product: "{{ satellite_repositories_catalog.rhel_baseos.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.rhel_supplementary.name }}"
+        product: "{{ satellite_repositories_catalog.rhel_supplementary.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.codeready.name }}"
+        product: "{{ satellite_repositories_catalog.codeready.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.satellite_main.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_main.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.satellite_capsule.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_capsule.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.satellite_client.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_client.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.satellite_maintenance.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_maintenance.product }}"
+        override: enabled
+      - name: "{{ satellite_repositories_catalog.satellite_utils.name }}"
+        product: "{{ satellite_repositories_catalog.satellite_utils.product }}"
+        override: enabled

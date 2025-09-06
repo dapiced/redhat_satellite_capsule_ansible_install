@@ -1,0 +1,55 @@
+---
+
+- name: Unregister the system
+  community.general.redhat_subscription:
+    state: absent
+  tags: unregister
+
+- name: Generate registration command
+  redhat.satellite.registration_command:
+    username: "{{ sat_user }}"
+    password: "{{ sat_pass }}"
+    server_url: "https://{{ sat_server }}"
+    activation_keys: "{{ sat_cv_act_key }}"
+    organization: "{{ sat_org }}"
+    force: true
+    setup_insights: false
+    setup_remote_execution: false
+    update_packages: false
+    validate_certs: false
+    insecure: true
+  register: command
+  delegate_to: localhost
+  no_log: true
+
+# No ansible module
+# https://access.redhat.com/solutions/7109954
+- name: Perform registration 
+  ansible.builtin.shell: "{{ command.registration_command }}"
+  register: resultreg
+  until: resultreg.rc == 0
+  retries: 5
+  delay: 10
+  no_log: true
+  tags: register  
+
+- name: Disable all repositories
+  community.general.rhsm_repository:
+    name: '*'
+    state: disabled
+  tags: disablerepo
+
+- name: Enable Capsule repositories
+  community.general.rhsm_repository:
+    name: "{{ sat_os_version + sat_bin_version }}"
+    state: enabled
+  tags: enablerepo
+
+- name: Install Capsule package
+  ansible.builtin.dnf:
+    name: satellite-capsule
+    state: present
+  tags: installcapsule
+
+- name: force all notified handlers to run at this point
+  meta: flush_handlers  

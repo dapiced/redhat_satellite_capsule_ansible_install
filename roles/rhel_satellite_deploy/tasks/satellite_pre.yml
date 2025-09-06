@@ -1,0 +1,33 @@
+---
+- name: System verification
+  ansible.builtin.fail:
+    msg: "OS must be RHEL9 - fail"
+  when: ansible_distribution != "RedHat" or ansible_distribution_major_version not in ["9"]
+  tags: checksystem
+
+- name: Check available space on /usr and /var
+  ansible.builtin.set_fact:
+    usr_available_mb: "{{ (ansible_mounts | selectattr('mount', 'equalto', '/usr') | map(attribute='size_available') | first / 1024 / 1024) | int }}"
+    var_available_mb: "{{ (ansible_mounts | selectattr('mount', 'equalto', '/var') | map(attribute='size_available') | first / 1024 / 1024) | int }}"
+  tags: checkspace
+
+- name: Add space to /usr if insufficient (< 3GB)
+  community.general.lvol:
+    vg: system
+    lv: usr
+    size: +2G
+    resizefs: true
+  when: usr_available_mb | int < 3000
+  tags: checkspace
+
+- name: Add space to /var if insufficient (< 5GB)
+  community.general.lvol:
+    vg: system
+    lv: var
+    size: +5G
+    resizefs: true
+  when: var_available_mb | int < 5000
+  tags: checkspace
+
+- name: force all notified handlers to run at this point
+  meta: flush_handlers 
