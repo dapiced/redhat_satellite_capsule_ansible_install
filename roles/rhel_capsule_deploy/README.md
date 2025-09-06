@@ -1,4 +1,4 @@
-# Ansible Role: rhel_capsule
+# Ansible Role: rhel_capsule_deploy
 
 This Ansible role automates the complete installation and configuration of Red Hat Capsule.
 
